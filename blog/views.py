@@ -1,8 +1,13 @@
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from blog.models import Category,Banner, Article, Tag, Link
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from blog.serializers import BannerSerializers
 
 
 def global_variable(request):
@@ -77,3 +82,11 @@ def search(request):
 # 关于我们
 def about(request):
     return render(request, 'page.html',locals())
+
+
+class Banners(APIView):
+
+    def get(self, request):
+        banners = Banner.objects.all()
+        data = BannerSerializers(banners, context={'request': request}, many=True)
+        return Response(data.data)
