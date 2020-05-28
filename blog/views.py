@@ -23,7 +23,7 @@ def index(request):
     allarticle = Article.objects.all().order_by('-id')[0:10]
     hot = Article.objects.all().order_by('views')[:10]
     link = Link.objects.all()
-    return render(request, 'article.html', locals())
+    return render(request, 'index.html', locals())
 
 #列表页
 def list(request,lid):
