@@ -1,8 +1,24 @@
+import datetime
+from uuid import uuid4
+
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.contrib.auth.models import User
-from DjangoUeditor.models import UEditorField #头部增加这行代码导入UEditorField
+from django.db.models.signals import pre_delete, post_init, post_save
+from django.dispatch import receiver
 
 # 导入Django自带用户模块
+
+def upload_image_cover(instance,filename):
+    ext = filename.split('.')[-1]
+    #日期目录和 随机文件名
+    filename = '{}.{}'.format(uuid4().hex, ext)
+    year = datetime.datetime.now().year
+    month =datetime.datetime.now().month
+    day = datetime.datetime.now().day
+    #instance 可使用instance.user.id
+    return "image/{0}/{1}/{2}/{3}".format(year,month,day,filename)
 
 # 文章分类
 class Category(models.Model):
@@ -49,12 +65,8 @@ class Article(models.Model):
     # 使用外键关联分类表与分类是一对多关系
     tags = models.ManyToManyField(Tag, verbose_name='标签', blank=True)
     # 使用外键关联标签表与标签是多对多关系
-    img = models.ImageField(upload_to='article_img/%Y/%m/%d/', verbose_name='文章图片', blank=True, null=True)
-    body = UEditorField('内容', width=800, height=500,
-                        toolbars="full", imagePath="upimg/", filePath="upfile/",
-                        upload_settings={"imageMaxSize": 1204000},
-                        settings={}, command=None, blank=True
-                        )
+    img = models.ImageField(upload_to=upload_image_cover, verbose_name='文章图片', blank=True, null=True)
+    body = RichTextUploadingField('正文')
 
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='作者')
@@ -78,19 +90,20 @@ class Article(models.Model):
         return self.title
 
 
-# Banner
-class Banner(models.Model):
-    text_info = models.CharField('标题', max_length=50, default='')
-    img = models.ImageField('轮播图', upload_to='banner/')
-    link_url = models.URLField('图片链接', max_length=100)
-    is_active = models.BooleanField('是否是active', default=False)
-
-    def __str__(self):
-        return self.text_info
-
-    class Meta:
-        verbose_name = '轮播图'
-        verbose_name_plural = '轮播图'
+#删除时
+@receiver(pre_delete, sender=Article)
+def delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    instance.img.delete(False)
+#修改时
+@receiver(post_init, sender=Article)
+def image_path(sender, instance, **kwargs):
+    instance._current_file = instance.img
+@receiver(post_save, sender= Article)
+def delete_old_image(sender, instance, **kwargs):
+    if hasattr(instance, '_current_file'):
+        if instance._current_file != instance.img.path:
+            instance._current_file.delete(save=False)
 
 
 # 友情链接

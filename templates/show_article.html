@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block static %}
+<link href="{% static 'css/info.css' %}" rel="stylesheet">
+{% endblock %}
+{% block left %}
+{% include 'left_search.html' %}
+{% include 'left_category.html' %}
+{% include 'left_rank.html' %}
+{% include 'left_tag.html' %}
+     {% endblock %}
+{% block content %}
+    <main class="infosbox">
+    <div class="newsview">
+      <h3 class="news_title">{{ show.title }}</h3>
+      <div class="bloginfo">
+        <ul>
+          <li class="author">作者：<a href="/">{{ show.user.username }}</a></li>
+          <li class="lmname"><a href="/">{{ show.category.name }}</a></li>
+          <li class="timer">时间：{{ show.created_time }}</li>
+          <li class="view">{{ show.views }}人已阅读</li>
+        </ul>
+      </div>
+<div class="tags">
+     {% for tag in show.tags.all %}
+        <a href="/" target="_blank">{{ tag.name }}</a>
+     {% endfor %}
+
+
+      <div class="news_about"><strong>简介</strong>{{ show.excerpt }}</div>
+      <div class="news_con">
+          {%autoescape off%}
+          {{ show.body }}
+          {% endautoescape %}
+        &nbsp; </div>
+    </div>
+    <div class="share">
+      <p class="diggit"><a href="JavaScript:makeRequest('/e/public/digg/?classid=3&amp;id=19&amp;dotop=1&amp;doajax=1&amp;ajaxarea=diggnum','EchoReturnedText','GET','');"> 很赞哦！ </a>(<b id="diggnum"><script type="text/javascript" src="/e/public/ViewClick/?classid=2&id=20&down=5"></script>{{ show.views }}</b>)</p>
+    </div>
+    <div class="nextinfo">
+      <p>上一篇：{% if previous_blog %}
+      <a href="{% url 'blog:show' previous_blog.id %}">{{ previous_blog.title }}</a></p>
+          {% else %} 没有了
+      {% endif %}
+      <p>下一篇：{% if netx_blog %}
+          <a href="{% url 'blog:show' netx_blog.id %}">{{ netx_blog.title }}</a></p>
+    {% else %} 没有了
+      {% endif %}
+    </div>
+    <div class="news_pl">
+      <h2>文章评论</h2>
+      <ul>
+        <div class="gbko"> </div>
+      </ul>
+    </div>
+    </div>
+      </main>
+{% endblock %}

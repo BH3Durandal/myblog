@@ -22,12 +22,6 @@ from myblog import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),#管理后台
-    path('', views.index, name='index'),#网站首页
-    path('list-<int:lid>.html', views.list, name='list'),#列表页
-    path('show-<int:sid>.html', views.show, name='show'),#内容页
-    path('tag/<tag>', views.tag, name='tags'),#标签列表页
-    path('s/', views.search, name='search'),#搜索列表页
-    path('about/', views.about, name='about'),#联系我们单页
-    path('ueditor/', include('DjangoUeditor.urls')),
-    path('Banners', views.Banners.as_view(), name='Banners')
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)#开发环境下使用

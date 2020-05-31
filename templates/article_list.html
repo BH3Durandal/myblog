@@ -1,0 +1,15 @@
+<main class="r_box">
+    {%for article in allarticle%}
+                <li>
+                    <i><a href="{% url 'blog:show' article.id %}">
+                        {% if article.img %}
+                        <img src="{{ article.img.url }}"></a></i>
+                        {% endif %}
+
+      <h3><a href="{% url 'blog:show' article.id %}">{{ article.title }}</a></h3>
+      <p>{{ article.excerpt }}</p>
+    </li>
+            {%endfor%}
+
+
+  </main>
