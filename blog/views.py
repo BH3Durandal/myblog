@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
@@ -26,12 +27,14 @@ def index(request):
     return render(request, 'index.html', locals())
 
 #列表页
-def article(request,page=1):
+def article(request):
+    page = request.GET.get('page', 1)
+    keyword = request.GET.get('keyword', '')
     allcategory = Category.objects.all()
     tags = Tag.objects.all()
     tui = Article.objects.filter(tui__id=1)[:5]
-    allarticle = Article.objects.all()
-    paginator = Paginator(allarticle, 5)
+    allarticle = Article.objects.filter(Q(title__contains=keyword) | Q(excerpt__contains=keyword))
+    paginator = Paginator(allarticle, 10)
     try:
         allarticle = paginator.page(page)#获取当前页码的记录
     except PageNotAnInteger:

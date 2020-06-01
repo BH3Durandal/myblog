@@ -137,8 +137,8 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CKEDITOR_UPLOAD_PATH = ''
-CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_STORAGE_BACKEND = 'blog.storage.UploadStorage'
+CKEDITOR_UPLOAD_PATH = 'img/'
 CKEDITOR_CONFIGS = {
     'default': {
         'update': ['Image', 'Update', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],

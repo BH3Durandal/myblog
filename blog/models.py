@@ -1,5 +1,3 @@
-import datetime
-from uuid import uuid4
 
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -7,20 +5,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_delete, post_init, post_save
 from django.dispatch import receiver
-
+from blog.storage import UploadStorage
 # 导入Django自带用户模块
 
-def upload_image_cover(instance,filename):
-    ext = filename.split('.')[-1]
-    #日期目录和 随机文件名
-    filename = '{}.{}'.format(uuid4().hex, ext)
-    year = datetime.datetime.now().year
-    month =datetime.datetime.now().month
-    day = datetime.datetime.now().day
-    #instance 可使用instance.user.id
-    return "image/{0}/{1}/{2}/{3}".format(year,month,day,filename)
-
 # 文章分类
+
+
 class Category(models.Model):
     name = models.CharField('博客分类', max_length=100)
     index = models.IntegerField(default=999, verbose_name='分类排序')
@@ -61,13 +51,13 @@ class Tui(models.Model):
 class Article(models.Model):
     title = models.CharField('标题', max_length=70)
     excerpt = models.TextField('摘要', max_length=200, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, verbose_name='分类', blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, verbose_name='分类')
     # 使用外键关联分类表与分类是一对多关系
     tags = models.ManyToManyField(Tag, verbose_name='标签', blank=True)
     # 使用外键关联标签表与标签是多对多关系
-    img = models.ImageField(upload_to=upload_image_cover, verbose_name='文章图片', blank=True, null=True)
+    img = models.ImageField(storage=UploadStorage(), verbose_name='文章图片', blank=True, null=True)
     body = RichTextUploadingField('正文')
-
+    likes = models.PositiveIntegerField('点赞量', default=0)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='作者')
     """
@@ -102,8 +92,9 @@ def image_path(sender, instance, **kwargs):
 @receiver(post_save, sender= Article)
 def delete_old_image(sender, instance, **kwargs):
     if hasattr(instance, '_current_file'):
-        if instance._current_file != instance.img.path:
-            instance._current_file.delete(save=False)
+        if instance.img:
+            if instance._current_file != instance.img.path:
+                instance._current_file.delete(save=False)
 
 
 # 友情链接

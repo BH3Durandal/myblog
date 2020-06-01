@@ -1,5 +1,7 @@
 asgiref==3.2.7
 Django==3.0.5
+django-ckeditor==5.9.0
+django-js-asset==1.2.2
 djangorestframework==3.11.0
 mysqlclient==1.4.6
 Pillow==7.1.2
