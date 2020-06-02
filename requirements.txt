@@ -2,7 +2,10 @@ asgiref==3.2.7
 Django==3.0.5
 django-ckeditor==5.9.0
 django-js-asset==1.2.2
+django-photologue==3.11
+django-sortedm2m==3.0.0
 djangorestframework==3.11.0
+ExifRead==2.1.2
 mysqlclient==1.4.6
 Pillow==7.1.2
 Pygments==2.6.1
