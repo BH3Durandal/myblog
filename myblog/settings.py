@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'photologue',
     'sortedm2m',
+    'photologue_custom',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'blog.views.global_variable',#添加此处
             ],
             'builtins' : [
                 'django.templatetags.static'
@@ -125,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
@@ -195,3 +195,5 @@ CKEDITOR_CONFIGS = {
             ]),
     }
 }
+
+PHOTOLOGUE_PATH = 'photologue_custom.utils.get_image_path'

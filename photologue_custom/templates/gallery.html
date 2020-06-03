@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load filters %}
+
+{% block content %}
+<div class="picbox">
+    {% for gallery in gallerys %}
+        <ul>
+      <li data-scroll-reveal="enter bottom over 1s" ><a href="{% url 'photologue_custom:gallery_detail' gallery.id %}"><i><img src="{{ gallery | img }}"></i>
+        <div class="picinfo">
+          <h3>{{ gallery.title }}</h3>
+          <span>{{ gallery.description }}</span> </div>
+        </a></li>
+    </ul>
+    {% endfor %}
+
+
+  </div>
+<div class="pagelist">
+            {% if page != 1 %}
+        <a class="allpage" href="{% url 'photologue_custom:gallery' %}"><b>首页</b></a>
+        {% endif %}
+            {% if gallerys.has_previous %}<a href="{% url 'photologue_custom:gallery' %}?page={{ gallerys.previous_page_number }}" onclick="page(2)">上一页</a>{% endif %}
+
+
+            <a href="#" class="curPage">{{ page }}</a>
+
+            {% if gallerys.has_next %}<a href="{% url 'photologue_custom:gallery' %}?page={{ gallerys.next_page_number }}" onclick="page(2)">下一页</a>{% endif %}
+            {% if gallerys.next_page_number == gallerys.num_pages %}
+        <a class="allpage" href="{% url 'photologue_custom:gallery' %}?page={{ gallerys.num_pages }}"><b>尾页</b></a>
+        {% endif %}
+
+        </div>
+  {% endblock %}

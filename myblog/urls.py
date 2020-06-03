@@ -23,6 +23,7 @@ from myblog import settings
 urlpatterns = [
     path('admin/', admin.site.urls),#管理后台
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('photologue/', include('photologue_custom.urls', namespace='photologue_custom')),
     path('photologue/', include('photologue.urls', namespace='photologue')),
     path('', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)#开发环境下使用

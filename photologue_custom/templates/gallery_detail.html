@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block static %}
+<link href="{% static 'css/infopic.css' %}" rel="stylesheet">
+<script src="{% static 'js/piccontent.min.js' %}" type="text/javascript"></script>
+    {% endblock %}
+{% block left %}
+{% include 'left.html' %}
+{% endblock %}
+{% block content %}
+
+<main>
+  <div class="picsbox">
+    <div class="bodymodal"></div>
+    <!--播放到第一张图的提示-->
+    <div class="firsttop">
+      <div class="firsttop_right">
+        <div class="close2"> <a class="closebtn1" title="关闭" href="javascript:void(0)"></a> </div>
+        <div class="replay">
+          <h2 id="div-end-h2"> 已到第一张图片了。 </h2>
+          <p> <a class="replaybtn1" href="javascript:;">重新播放</a> </p>
+        </div>
+      </div>
+    </div>
+    <!--播放到最后一张图的提示-->
+    <div class="endtop">
+      <div class="firsttop_right">
+        <div class="close2"> <a class="closebtn2" title="关闭" href="javascript:void(0)"></a> </div>
+        <div class="replay">
+          <h2 id="H1"> 已到最后一张图片了。 </h2>
+          <p> <a class="replaybtn2" href="javascript:;">重新播放</a> </p>
+        </div>
+      </div>
+    </div>
+    <!--弹出层结束-->
+    <!--图片特效内容开始-->
+    <div class="piccontext">
+      <h2> {{ gallery.title }} </h2>
+      <div class="source">
+        <div class="source_left"><span>{{ gallery.date_added }}</span> </div>
+        <div class="source_right"> <a href="javascript:;" class="list">列表查看</a> </div>
+        <div class="source_right1"> <a href="javascript:;" class="gaoqing">高清查看</a> </div>
+      </div>
+      <!--大图展示-->
+      <div class="picshow">
+        <div class="picshowtop"> <a href="#"><img src="" alt="" id="pic1" curindex="0" /></a> <a id="preArrow" href="javascript:void(0)" class="contextDiv" title="上一张"><span id="preArrow_A"></span></a> <a id="nextArrow" href="javascript:void(0)" class="contextDiv" title="下一张"><span id="nextArrow_A"></span></a> </div>
+        <div class="picshowtxt">
+          <div class="picshowtxt_left"><span>1</span>/<i>12</i></div>
+          <div class="picshowtxt_right"></div>
+        </div>
+        <div class="picshowlist">
+          <div class="picshowlist_mid">
+            <div class="picmidleft"> <a href="javascript:void(0)" id="preArrow_B"><span class="sleft"></span></a> </div>
+            <div class="picmidmid">
+              <ul>
+                {% for photo in gallery.sample %}
+                  <li> <a href="javascript:void(0);"><img src="{{ photo.get_thumbnail_url }}" alt="" bigimg="{{ photo.image.url }}" text="{{ photo.title }}" /></a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="picmidright"> <a href="javascript:void(0)" id="nextArrow_B"><span class="sright"></span></a> </div>
+          </div>
+        </div>
+      </div>
+
+      <!--列表展示-->
+      <div class="piclistshow">
+        <ul>
+          {% for photo in gallery.sample %}
+            <li>
+              <div class="picimg"><img src="{{ photo.get_display_url }}" alt="" /></div>
+              <div class="pictxt">
+                <h3>{{ photo.title }}</h3>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="pictext">
+      <ul>
+        {{ gallery.description }}
+      </ul>
+    </div>
+    <div class="share">
+      <p class="diggit"> 很赞哦！ </a>(<b id="diggnum">13</b>)</p>
+    </div>
+  </div>
+  </main>
+{% endblock %}
+<script>
+        {# 点赞和踩 ，两个标签加上action  is_up为布尔值 #}
+        $('#share').click(function () {
+            var is_up = $(this).hasClass('diggit')
+            {# ajax来操作点赞功能 #}
+            $.ajax({
+                url: '/digg/',
+                type: 'post',
+                data: {
+                    'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),  //token值
+                    'is_up': is_up,
+                    'article_id': '{{ article_obj.pk }}',
+                },
+                success: function (data) {
+                    if (data.state) {
+                        // Ajax 局部刷新!!!
+
+                        // 判断是否是点赞
+                        if(is_up){
+                            var val = parseInt($('#digg_count').text());
+                            $('#digg_count').text(val+1)
+                        }else{
+                            var val = parseInt($('#bury_count').text());
+                            $('#bury_count').text(val+1)
+                        }
+
+                    }
+                    else {
+                        if (data.handled) {
+                            $('#digg_tips').html('你已经推荐过')
+                        } else {
+                            $('#digg_tips').html('你已经反对过')
+                        }
+                        setTimeout(function () {  // 设置时钟函数，一秒钟后消失
+                            $('#digg_tips').html('')  //清空
+                        }, 1000)
+
+                    }
+                }
+            })
+        })
+
+    </script>
