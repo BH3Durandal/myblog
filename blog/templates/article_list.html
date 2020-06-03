@@ -1,0 +1,32 @@
+<main class="r_box">
+    {%for article in allarticle%}
+                <li>
+
+                        {% if article.img %}
+                    <i><a href="{% url 'blog:article_detail' article.id %}">
+                        <img src="{{ article.img.url }}"></a></i>
+                        {% endif %}
+
+      <h3><a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a></h3>
+      <p>{{ article.excerpt }}</p>
+    </li>
+            {%endfor%}
+
+{% if allarticle.paginator %}
+        <div class="pagelist">
+            {% if page != 1 %}
+        <a class="allpage" href="{% url 'blog:article' %}?keyword={{ keyword }}"><b>首页</b></a>
+        {% endif %}
+            {% if allarticle.has_previous %}<a href="{% url 'blog:article' %}?keyword={{ keyword }}&page={{ allarticle.previous_page_number }}" onclick="page(2)">上一页</a>{% endif %}
+
+
+            <a href="#" class="curPage">{{ page }}</a>
+
+            {% if allarticle.has_next %}<a href="{% url 'blog:article' %}?keyword={{ keyword }}&page={{ allarticle.next_page_number }}" onclick="page(2)">下一页</a>{% endif %}
+            {% if allarticle.next_page_number == allarticle.num_pages %}
+        <a class="allpage" href="{% url 'blog:article' %}?keyword={{ keyword }}&page={{ allarticle.num_pages }}"><b>尾页</b></a>
+        {% endif %}
+
+        </div>
+{% endif %}
+  </main>

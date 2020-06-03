@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block left %}
+
+{% include 'left_about.html' %}
+{% include 'left.html' %}
+
+{% include 'left_follow.html' %}
+<div class="links">
+        <h2>友情链接</h2>
+        {% for i in link %}
+            <ul>
+              <a href="{{ linkurl }}">{{ name }}</a>
+            </ul>
+        {% endfor %}
+      </div>
+ {% endblock %}
+{% block content %}
+{% include 'article_list.html' %}
+
+{% endblock %}

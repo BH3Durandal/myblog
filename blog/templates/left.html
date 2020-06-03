@@ -1,0 +1,32 @@
+<div class="search">
+        <form action="article" method="get" name="searchform" id="searchform">
+            {% csrf_token %}
+          <input name="keyword" id="keyword" class="input_text" value="{{ keyword }}" style="color: rgb(153, 153, 153);" type="text">
+
+          <input name="Submit" class="input_submit" value="搜索" type="submit">
+        </form>
+      </div>
+<div class="fenlei">
+        <h2>文章分类</h2>
+        <ul>
+            {%for category in allcategory%}
+                <li><a href="/">{{ category.name }}</a></li>
+            {%endfor%}
+        </ul>
+      </div>
+<div class="tuijian">
+        <h2>站长推荐</h2>
+        <ul>
+            {%for t in tui%}
+                <li><a href="/">{{ t.title }}</a></li>
+            {%endfor%}
+        </ul>
+      </div>
+<div class="tuijian">
+      <h2>点击排行</h2>
+      <ul>
+        {%for h in hot%}
+                <li><a href="/">{{ h.title }}</a></li>
+        {%endfor%}
+      </ul>
+    </div>
