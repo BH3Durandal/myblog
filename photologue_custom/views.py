@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -30,6 +31,11 @@ def gallery_detail(request, gid):
     tui = Article.objects.filter(tui__id=1)[:5]
     gallery = Gallery.objects.get(Q(is_public=True) & Q(pk=gid))
     return render(request, 'gallery_detail.html', locals())
+
+def diggit(request):
+    data = {'state': 200, 'msg': None}
+    return JsonResponse(data)
+
 
 class gallerys(APIView):
 

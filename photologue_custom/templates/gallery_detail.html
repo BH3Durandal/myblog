@@ -87,43 +87,22 @@
     </div>
   </div>
   </main>
-{% endblock %}
-<script>
+    <script>
         {# 点赞和踩 ，两个标签加上action  is_up为布尔值 #}
-        $('#share').click(function () {
+        $('.share').click(function () {
             var is_up = $(this).hasClass('diggit')
             {# ajax来操作点赞功能 #}
             $.ajax({
-                url: '/digg/',
-                type: 'post',
+                url: '{% url 'photologue_custom:diggit' %}',
+                type: 'get',
                 data: {
-                    'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),  //token值
-                    'is_up': is_up,
-                    'article_id': '{{ article_obj.pk }}',
+                    'gid': '{{ gallery.pk }}',
                 },
                 success: function (data) {
                     if (data.state) {
                         // Ajax 局部刷新!!!
-
-                        // 判断是否是点赞
-                        if(is_up){
-                            var val = parseInt($('#digg_count').text());
-                            $('#digg_count').text(val+1)
-                        }else{
-                            var val = parseInt($('#bury_count').text());
-                            $('#bury_count').text(val+1)
-                        }
-
-                    }
-                    else {
-                        if (data.handled) {
-                            $('#digg_tips').html('你已经推荐过')
-                        } else {
-                            $('#digg_tips').html('你已经反对过')
-                        }
-                        setTimeout(function () {  // 设置时钟函数，一秒钟后消失
-                            $('#digg_tips').html('')  //清空
-                        }, 1000)
+                            var val = parseInt($('#diggnum').text());
+                            $('#diggnum').text(val+1)
 
                     }
                 }
@@ -131,3 +110,4 @@
         })
 
     </script>
+{% endblock %}
