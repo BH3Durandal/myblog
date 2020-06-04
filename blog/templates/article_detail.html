@@ -32,9 +32,9 @@
           {% endautoescape %}
         &nbsp; </div>
     </div>
-    <div class="share">
+    <a href="javascript:void(0);"><div class="share">
       <p class="diggit"> 很赞哦！ </a>(<b id="diggnum">{{ detail.likes }}</b>)</p>
-    </div>
+    </div></a>
     <div class="nextinfo">
       <p>上一篇：{% if previous_blog %}
       <a href="{% url 'blog:article_detail' previous_blog.id %}">{{ previous_blog.title }}</a></p>
@@ -53,4 +53,26 @@
     </div>
     </div>
       </main>
+    <script>
+        {# 点赞和踩 ，两个标签加上action  is_up为布尔值 #}
+        $('.share').click(function () {
+            var is_up = $(this).hasClass('diggit')
+            {# ajax来操作点赞功能 #}
+{#            $.ajax({#}
+{#                url: '{% url 'photologue_custom:diggit' %}',#}
+{#                type: 'get',#}
+{#                data: {#}
+{#                    'gid': '{{ gallery.pk }}',#}
+{#                },#}
+{#                success: function (data) {#}
+{#                    if (data.state) {#}
+{#                        // Ajax 局部刷新!!!#}
+            var val = parseInt($('#diggnum').text());
+            $('#diggnum').text(val+1)
+{#                    }#}
+  {#               }#}
+   {#          })#}
+        })
+
+    </script>
 {% endblock %}
